@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph.xml"
+    app:startDestination="@id/breakingNewsFragment">
+
+    <fragment
+        android:id="@+id/breakingNewsFragment"
+        android:name="com.dboy.newsmvvm.ui.fragments.BreakingNewsFragment"
+        android:label="Breaking news"
+        tools:layout="@layout/fragment_breaking_news" >
+        <action
+            android:id="@+id/action_breakingNewsFragment_to_articleNewsFragment"
+            app:destination="@id/articleNewsFragment"
+            app:enterAnim="@anim/slide_in_right"
+
+            />
+<!--        Primeiro eu quero testar essas animações só em uma action de fragment. Depois coloco em todos outros também-->
+    </fragment>
+    <fragment
+        android:id="@+id/favoriteNewsFragment"
+        android:name="com.dboy.newsmvvm.ui.fragments.FavoriteNewsFragment"
+        android:label="Favorite news"
+        tools:layout="@layout/fragment_favorite_news" >
+        <action
+            android:id="@+id/action_favoriteNewsFragment_to_articleNewsFragment"
+            app:destination="@id/articleNewsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchNewsFragment"
+        android:name="com.dboy.newsmvvm.ui.fragments.SearchNewsFragment"
+        android:label="Search for news"
+        tools:layout="@layout/fragment_search_news" >
+        <action
+            android:id="@+id/action_searchNewsFragment_to_articleNewsFragment"
+            app:destination="@id/articleNewsFragment"
+            app:enterAnim="@anim/slide_in_left"/>
+    </fragment>
+    <fragment
+        android:id="@+id/articleNewsFragment"
+        android:name="com.dboy.newsmvvm.ui.fragments.ArticleNewsFragment"
+        android:label="News"
+        tools:layout="@layout/fragment_article_news" >
+        <argument
+            android:name="article"
+            app:argType="com.dboy.newsmvvm.api.response.Article" />
+    </fragment>
+</navigation>
