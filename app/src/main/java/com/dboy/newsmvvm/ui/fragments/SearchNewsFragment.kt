@@ -51,8 +51,8 @@ class SearchNewsFragment : Fragment() {
                 }
             }
         }
-//O código acima foi escrito para a função search ter um delay antes de procurar. Isso evita com que uma nova procura seja
-// iniciada a cada letra escrita ou apagada. O job foi utilizado e ele facilitou a escrita do código.
+        //O código acima foi escrito para a função search ter um delay antes de procurar. Isso evita com que uma nova procura seja
+        // iniciada a cada letra escrita ou apagada. O job foi utilizado e ele facilitou a escrita do código.
         newsViewModel.searchedNews.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {

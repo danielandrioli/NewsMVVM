@@ -16,12 +16,14 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_favorite"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:contentDescription="Favorite"
-        android:src="@drawable/ic_favorite_rosa"
+        android:src="@drawable/ic_favorite"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        style="@style/Widget.App.FloatingActionButton"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dboy.newsmvvm.api.CountryCode
+import com.dboy.newsmvvm.api.response.Article
 import com.dboy.newsmvvm.api.response.Language
 import com.dboy.newsmvvm.api.response.NewsResponse
 import com.dboy.newsmvvm.repositories.NewsRepository
@@ -26,9 +27,9 @@ class NewsViewModel @Inject constructor(private val newsRepository: NewsReposito
     var searchNewsPage = 1
 
     init {
-        getBreakingNews(CountryCode.us)
+        getBreakingNews(CountryCode.us)  //FAZER O USUÁRIO DECIDIR DE ONDE PESQUISAR. E A LINGUAGEM DO SEARCHNEWS VEM DO LUGAR
     }
-    //talvez mudar o tipo do countryCode para um ENUM que contenha os códigos
+
     fun getBreakingNews(countryCode: CountryCode) {
         viewModelScope.launch(Dispatchers.IO) {
             _breakingNews.postValue(Resource.Loading())
@@ -44,4 +45,14 @@ class NewsViewModel @Inject constructor(private val newsRepository: NewsReposito
             _searchedNews.postValue(result)
         }
     }
+
+    fun saveNews(article: Article) = viewModelScope.launch {
+        newsRepository.upsertArticle(article)
+    }
+
+    fun deleteNews(article: Article) = viewModelScope.launch {
+        newsRepository.deleteArticle(article)
+    }
+
+    fun getSavedNews() = newsRepository.getSavedNews()
 }

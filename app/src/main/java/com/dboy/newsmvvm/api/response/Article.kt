@@ -17,4 +17,13 @@ data class Article(
     val title: String,
     val url: String,
     val urlToImage: String?
-) : Parcelable
+) : Parcelable {
+    override fun equals(other: Any?): Boolean {
+        if (other != null && other is Article){
+            if (this.url == other.url){
+                return true
+            }
+        }
+        return false
+    }
+}

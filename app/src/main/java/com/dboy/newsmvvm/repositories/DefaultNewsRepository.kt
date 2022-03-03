@@ -1,8 +1,10 @@
 package com.dboy.newsmvvm.repositories
 
 import android.util.Log
+import androidx.lifecycle.LiveData
 import com.dboy.newsmvvm.api.CountryCode
 import com.dboy.newsmvvm.api.NewsApi
+import com.dboy.newsmvvm.api.response.Article
 import com.dboy.newsmvvm.api.response.Language
 import com.dboy.newsmvvm.api.response.NewsResponse
 import com.dboy.newsmvvm.database.ArticleDao
@@ -47,15 +49,21 @@ class DefaultNewsRepository(
                 Log.i("Search", "tudo ok - ${result.status}. Response: ${response.message()}")
                 Resource.Success(result)
             } else {
-                Log.i("Search", "Não deu: ${result?.status}. Response: ${response}")
-
+                Log.i("Search", "Não deu: ${result?.status}. Response: $response")
                 Resource.Error(response.message(), result)
             }
         } catch (e: Exception) {
             Log.i("Search", "Não deu, caiu no catch. Response: ${response.message()}")
-
             Resource.Error(e.message.toString())
         }
     }
+
+    override suspend fun upsertArticle(article: Article): Long = articleDao.upsertArticle(article)
+
+    override suspend fun deleteArticle(article: Article) {
+        articleDao.deleteArticle(article)
+    }
+
+    override fun getSavedNews(): LiveData<List<Article>> = articleDao.getAllArticles()
 
 }

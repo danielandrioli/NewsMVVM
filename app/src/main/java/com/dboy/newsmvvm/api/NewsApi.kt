@@ -10,7 +10,7 @@ const val API_KEY = "4bc8a57aa6774a4ea2009a9f9ed7ea92"
 
 interface NewsApi {
 
-    @GET("/v2/top-headlines")
+    @GET("/v2/top-headlines") //esse é um headline
     suspend fun getBreakingNews(
         @Query("category") category: String = "general",
         @Query("country") countryCode: String = "br",

@@ -36,6 +36,10 @@ class MainActivity : AppCompatActivity() {
         binding?.bottomNavigationView?.setupWithNavController(navController)
     }
 
+    override fun onSupportNavigateUp(): Boolean {
+        return super.onSupportNavigateUp() || navController.navigateUp()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         binding = null

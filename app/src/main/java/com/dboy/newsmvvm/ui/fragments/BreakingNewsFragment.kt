@@ -49,7 +49,7 @@ class BreakingNewsFragment : Fragment() {
         }
 
         newsAdapter.setOnItemArticleClickListener {
-            val action = BreakingNewsFragmentDirections.actionBreakingNewsFragmentToArticleNewsFragment(it)
+            val action = BreakingNewsFragmentDirections.actionBreakingNewsFragmentToArticleNewsFragment(article = it)
             findNavController().navigate(action)
         }
     }
