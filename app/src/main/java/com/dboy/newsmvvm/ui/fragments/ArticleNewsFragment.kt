@@ -1,13 +1,13 @@
 package com.dboy.newsmvvm.ui.fragments
 
 import android.content.res.ColorStateList
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebViewClient
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
@@ -36,37 +36,45 @@ class ArticleNewsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding?.webViewArticle?.let {
             it.webViewClient =
-                WebViewClient() //a view vai carregar no WebView, e não no browser do celular
+                WebViewClient() //the view will be loaded in the WebView, and not in the phone's browser.
             it.loadUrl(article.url)
         }
 
         val savedArticlesList = newsViewModel.getSavedNews()
 
         binding?.fabFavorite?.setOnClickListener {
-            if (article in savedArticlesList.value!!){
-//                val art = savedArticlesList!!.value?.find {
-//                    it.url == article.url
-//                }
-//                Log.i("ArticleNewsFragment" ,"- it.url = ${art?.url}\narticle.url = ${article.url}\nit.id = ${art?.id}\narticle.id = ${article.id}")
-
-                newsViewModel.deleteNews(article)
-                Log.i("ArticleNewsFragment" ,"- Deletando artigo!")
-                //nao consegue deletar se o article vem do BreakingNewsFragment pq de lá o artigo não tem o ID.
-                //Devo remover o ID e colocar primaryKey como a URL!! E sem ser automaticamente criada pelo Room.
-            } else{
-                newsViewModel.saveNews(article)
-                Log.i("ArticleNewsFragment" ,"- Salvando artigo!")
+            val savedArticleFromDb = savedArticlesList!!.value?.find {
+                it.url == article.url
             }
+            if (savedArticleFromDb != null) { // != null means it is in the database
+                newsViewModel.deleteNews(savedArticleFromDb) //savedArtFromDb came from db and it contains an id. With an id it's possible to delete the article from db.
+                Log.i("ArticleNewsFragment", "- Deletando artigo!")
+            } else {
+                newsViewModel.saveNews(article) //Here, the article is not in the db, so I'm saving the article that came from args.
+            }
+            Log.i(
+                "ArticleNewsFragment",
+                "- it.url = ${savedArticleFromDb?.url}\narticle.url = ${article.url}\nit.id = ${savedArticleFromDb?.id}\narticle.id = ${article.id}"
+            )
         }
 
         savedArticlesList.observe(viewLifecycleOwner) {
-            if (article in it) {  //terei que mexer na comparação da classe Article. A comparação deve ser com base na url
-                binding?.fabFavorite?.setColorFilter(R.color.favorite_rosa) //cor do ícone
-                Log.i("ArticleNewsFragment" ,"- Está na lista!")
+            if (article in it) {
+                Log.i("ArticleNewsFragment", "- Está na lista!")
+                binding?.fabFavorite?.imageTintList = ColorStateList.valueOf(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.favorite_rosa
+                    )
+                )
             } else {
-                binding?.fabFavorite?.setColorFilter(R.color.favorite_vazio)
-                Log.i("ArticleNewsFragment" ,"- NÃO está na lista!")
-
+                binding?.fabFavorite?.imageTintList = ColorStateList.valueOf(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.favorite_vazio
+                    )
+                )
+                Log.i("ArticleNewsFragment", "- NÃO está na lista!")
             }
         }
     }

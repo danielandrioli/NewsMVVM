@@ -26,4 +26,11 @@ data class Article(
         }
         return false
     }
+
+    override fun hashCode(): Int {
+        return this.url.hashCode()
+    }
 }
+// When I undo a deletion after a swipe gesture in the FavoriteNewsFragment, the article goes to the same place it was before.
+// However, this happens only if I have an id Int as PrimaryKey. If I set the url as PrimaryKey, the article goes down below the saved list
+// after undoing a deletion.
