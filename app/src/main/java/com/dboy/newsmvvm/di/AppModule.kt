@@ -2,12 +2,12 @@ package com.dboy.newsmvvm.di
 
 import android.content.Context
 import androidx.room.Room
-import com.dboy.newsmvvm.api.BASE_URL
 import com.dboy.newsmvvm.api.NewsApi
 import com.dboy.newsmvvm.database.ArticleDao
 import com.dboy.newsmvvm.database.NewsDatabase
 import com.dboy.newsmvvm.repositories.DefaultNewsRepository
 import com.dboy.newsmvvm.repositories.NewsRepository
+import com.dboy.newsmvvm.util.BASE_URL
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module

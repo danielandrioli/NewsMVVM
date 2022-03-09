@@ -18,14 +18,21 @@ data class Article(
     val url: String,
     val urlToImage: String?
 ) : Parcelable {
-    override fun equals(other: Any?): Boolean {
-        if (other != null && other is Article){
+    override fun equals(other: Any?): Boolean {  //The id shouldn't be compared.
+        if (other != null && other is Article){  //COMPARAR MAIS PROPERTIES AQUI, MENOS O ID!!! E atualizar o hashCode também.
             if (this.url == other.url){
-                return true
+                return true //ACHO QUE DÁ PARA DELETAR ESSE OVERRIDE DO EQUALS. NO ArticleNewsFragment estou comparando as URL. TESTAR!
             }
         }
         return false
     }
+
+    /*
+    override fun equals(other: Any?): Boolean {
+
+        return super.equals(other)
+    }
+     */
 
     override fun hashCode(): Int {
         return this.url.hashCode()

@@ -2,7 +2,6 @@ package com.dboy.newsmvvm.ui.fragments
 
 import android.content.res.ColorStateList
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -48,19 +47,13 @@ class ArticleNewsFragment : Fragment() {
             }
             if (savedArticleFromDb != null) { // != null means it is in the database
                 newsViewModel.deleteNews(savedArticleFromDb) //savedArtFromDb came from db and it contains an id. With an id it's possible to delete the article from db.
-                Log.i("ArticleNewsFragment", "- Deletando artigo!")
             } else {
                 newsViewModel.saveNews(article) //Here, the article is not in the db, so I'm saving the article that came from args.
             }
-            Log.i(
-                "ArticleNewsFragment",
-                "- it.url = ${savedArticleFromDb?.url}\narticle.url = ${article.url}\nit.id = ${savedArticleFromDb?.id}\narticle.id = ${article.id}"
-            )
         }
 
         savedArticlesList.observe(viewLifecycleOwner) {
             if (article in it) {
-                Log.i("ArticleNewsFragment", "- Está na lista!")
                 binding?.fabFavorite?.imageTintList = ColorStateList.valueOf(
                     ContextCompat.getColor(
                         requireContext(),
@@ -74,7 +67,6 @@ class ArticleNewsFragment : Fragment() {
                         R.color.favorite_vazio
                     )
                 )
-                Log.i("ArticleNewsFragment", "- NÃO está na lista!")
             }
         }
     }

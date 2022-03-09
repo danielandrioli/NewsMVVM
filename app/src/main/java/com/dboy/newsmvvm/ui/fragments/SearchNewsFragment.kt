@@ -1,7 +1,6 @@
 package com.dboy.newsmvvm.ui.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,22 +9,22 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.dboy.newsmvvm.adapters.NewsAdapter
-import com.dboy.newsmvvm.api.CountryCode
-import com.dboy.newsmvvm.api.response.Language
+import com.dboy.newsmvvm.adapters.NewsAdapterWithPagination
 import com.dboy.newsmvvm.databinding.FragmentSearchNewsBinding
 import com.dboy.newsmvvm.ui.NewsViewModel
-import com.dboy.newsmvvm.util.Resource
+import com.dboy.newsmvvm.util.Language
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+
 //funcionou sem o @AndroidEntryPoint aqui. É necessário acrescentar essa anotação?
+@AndroidEntryPoint
 class SearchNewsFragment : Fragment() {
     private var binding: FragmentSearchNewsBinding? = null
     private val newsViewModel: NewsViewModel by activityViewModels()
-    private lateinit var newsAdapter: NewsAdapter
-    private val TAG = "SearchNewsFragment"
+    private lateinit var newsAdapter: NewsAdapterWithPagination
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,7 +44,7 @@ class SearchNewsFragment : Fragment() {
             job = MainScope().launch {
                 delay(1000L)
                 it?.let {
-                    if (it.isNotEmpty()){
+                    if (it.isNotEmpty()) {
                         newsViewModel.searchNews(it.toString(), Language.en)
                     }
                 }
@@ -53,22 +52,14 @@ class SearchNewsFragment : Fragment() {
         }
         //O código acima foi escrito para a função search ter um delay antes de procurar. Isso evita com que uma nova procura seja
         // iniciada a cada letra escrita ou apagada. O job foi utilizado e ele facilitou a escrita do código.
-        newsViewModel.searchedNews.observe(viewLifecycleOwner) {
-            when (it) {
-                is Resource.Success -> {
-                    showOrHideProgressBar(View.GONE)
-                    newsAdapter.differ.submitList(it.data?.articles)
-                }
-                is Resource.Error -> {
-                    showOrHideProgressBar(View.GONE)
-                    Log.e(TAG, it.message.toString())
-                }
-                is Resource.Loading -> showOrHideProgressBar(View.VISIBLE)
-            }
+
+        newsViewModel.searchedNewsWithPagination.observe(viewLifecycleOwner) {
+            newsAdapter.submitData(viewLifecycleOwner.lifecycle, it)
         }
 
         newsAdapter.setOnItemArticleClickListener {
-            val action = SearchNewsFragmentDirections.actionSearchNewsFragmentToArticleNewsFragment(it)
+            val action =
+                SearchNewsFragmentDirections.actionSearchNewsFragmentToArticleNewsFragment(it)
             findNavController().navigate(action)
         }
     }
@@ -78,7 +69,7 @@ class SearchNewsFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        newsAdapter = NewsAdapter()
+        newsAdapter = NewsAdapterWithPagination()
         binding?.rvSearchNews?.apply {
             adapter = newsAdapter
             layoutManager = LinearLayoutManager(requireContext())

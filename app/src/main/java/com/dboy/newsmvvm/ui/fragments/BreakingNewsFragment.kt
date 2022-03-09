@@ -1,27 +1,23 @@
 package com.dboy.newsmvvm.ui.fragments
 
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.dboy.newsmvvm.adapters.NewsAdapter
+import com.dboy.newsmvvm.adapters.NewsAdapterWithPagination
 import com.dboy.newsmvvm.databinding.FragmentBreakingNewsBinding
 import com.dboy.newsmvvm.ui.NewsViewModel
-import com.dboy.newsmvvm.ui.NewsViewModel_Factory
-import com.dboy.newsmvvm.util.Resource
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class BreakingNewsFragment : Fragment() {
     private var binding: FragmentBreakingNewsBinding? = null
     private val newsViewModel: NewsViewModel by activityViewModels()
-    private lateinit var newsAdapter: NewsAdapter
-    private val TAG = "BreakingNewsFragment"
+    private lateinit var newsAdapter: NewsAdapterWithPagination
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,36 +29,31 @@ class BreakingNewsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setupRecyclerView()
-        newsViewModel.breakingNews.observe(viewLifecycleOwner){
-            when(it){
-                is Resource.Success -> {
-                    showOrHideProgressBar(View.GONE)
-                    newsAdapter.differ.submitList(it.data?.articles)
-
-                }
-                is Resource.Error -> {
-                    showOrHideProgressBar(View.GONE)
-                    Log.e(TAG, it.message.toString())
-                }
-                is Resource.Loading -> showOrHideProgressBar(View.VISIBLE)
-            }
+        //it's important to pass viewLifecycleOwner instead of the fragment itself, cause I want to stop updating the UI when the view is
+        //destroyed and the fragment is still alive in the background.
+        newsViewModel.breakingNewsWithPagination.observe(viewLifecycleOwner) {
+            newsAdapter.submitData(viewLifecycleOwner.lifecycle, it)
         }
 
         newsAdapter.setOnItemArticleClickListener {
-            val action = BreakingNewsFragmentDirections.actionBreakingNewsFragmentToArticleNewsFragment(article = it)
+            val action =
+                BreakingNewsFragmentDirections.actionBreakingNewsFragmentToArticleNewsFragment(
+                    article = it
+                )
             findNavController().navigate(action)
         }
     }
 
-    private fun showOrHideProgressBar(visibility: Int){
+    private fun showOrHideProgressBar(visibility: Int) {
         binding?.pgBreakingNews?.visibility = visibility
     }
 
-    private fun setupRecyclerView(){
-        newsAdapter = NewsAdapter()
+    private fun setupRecyclerView() {
+        newsAdapter = NewsAdapterWithPagination()
         binding?.rvBreakingNews?.apply {
             adapter = newsAdapter
             layoutManager = LinearLayoutManager(requireContext())
+//            setHasFixedSize(true)
         }
     }
 

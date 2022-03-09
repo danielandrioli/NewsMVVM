@@ -1,12 +1,10 @@
 package com.dboy.newsmvvm.api
 
 import com.dboy.newsmvvm.api.response.NewsResponse
+import com.dboy.newsmvvm.util.API_KEY
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
-
-const val BASE_URL = "https://newsapi.org/"
-const val API_KEY = "4bc8a57aa6774a4ea2009a9f9ed7ea92"
 
 interface NewsApi {
 
