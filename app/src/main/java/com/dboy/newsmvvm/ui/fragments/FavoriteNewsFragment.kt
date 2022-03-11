@@ -37,7 +37,7 @@ class FavoriteNewsFragment : Fragment() {
         }
 
         newsViewModel.getSavedNews().observe(viewLifecycleOwner){
-            newsAdapter.differ.submitList(it)
+            newsAdapter.differ.submitList(it.reversed())
         }
 
         //arrastar para o lado para deletar:
@@ -53,7 +53,7 @@ class FavoriteNewsFragment : Fragment() {
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val position = viewHolder.adapterPosition
+                val position = viewHolder.bindingAdapterPosition
                 val article = newsAdapter.differ.currentList[position]
                 newsViewModel.deleteNews(article)
 

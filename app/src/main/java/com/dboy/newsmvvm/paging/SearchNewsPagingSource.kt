@@ -46,6 +46,6 @@ class SearchNewsPagingSource(
     }
 
     override fun getRefreshKey(state: PagingState<Int, Article>): Int? {
-        TODO("Not yet implemented")
+        return state.anchorPosition
     }
 }

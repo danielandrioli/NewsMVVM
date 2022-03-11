@@ -9,6 +9,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dboy.newsmvvm.adapters.NewsAdapterWithPagination
+import com.dboy.newsmvvm.adapters.NewsLoadStateAdapter
 import com.dboy.newsmvvm.databinding.FragmentBreakingNewsBinding
 import com.dboy.newsmvvm.ui.NewsViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -44,16 +45,15 @@ class BreakingNewsFragment : Fragment() {
         }
     }
 
-    private fun showOrHideProgressBar(visibility: Int) {
-        binding?.pgBreakingNews?.visibility = visibility
-    }
-
     private fun setupRecyclerView() {
         newsAdapter = NewsAdapterWithPagination()
         binding?.rvBreakingNews?.apply {
-            adapter = newsAdapter
+            adapter = newsAdapter.withLoadStateHeaderAndFooter(
+                header = NewsLoadStateAdapter(newsAdapter::retry),
+                footer = NewsLoadStateAdapter(newsAdapter::retry)
+            )
             layoutManager = LinearLayoutManager(requireContext())
-//            setHasFixedSize(true)
+            setHasFixedSize(true)
         }
     }
 

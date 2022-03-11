@@ -10,6 +10,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dboy.newsmvvm.adapters.NewsAdapterWithPagination
+import com.dboy.newsmvvm.adapters.NewsLoadStateAdapter
 import com.dboy.newsmvvm.databinding.FragmentSearchNewsBinding
 import com.dboy.newsmvvm.ui.NewsViewModel
 import com.dboy.newsmvvm.util.Language
@@ -64,14 +65,13 @@ class SearchNewsFragment : Fragment() {
         }
     }
 
-    private fun showOrHideProgressBar(visibility: Int) {
-        binding?.pgSearchNews?.visibility = visibility
-    }
-
     private fun setupRecyclerView() {
         newsAdapter = NewsAdapterWithPagination()
         binding?.rvSearchNews?.apply {
-            adapter = newsAdapter
+            adapter = newsAdapter.withLoadStateHeaderAndFooter(
+                header = NewsLoadStateAdapter(newsAdapter::retry),
+                footer = NewsLoadStateAdapter(newsAdapter::retry)
+            )
             layoutManager = LinearLayoutManager(requireContext())
         }
     }

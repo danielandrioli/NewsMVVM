@@ -45,6 +45,6 @@ class BreakingNewsPagingSource( //por enquanto, vou deixar sem injecao de depend
     }
 
     override fun getRefreshKey(state: PagingState<Int, Article>): Int? {
-        TODO("Not yet implemented")
+        return state.anchorPosition
     }
 }
