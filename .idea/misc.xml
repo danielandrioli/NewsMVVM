@@ -7,7 +7,7 @@
         <entry key="app/src/main/res/drawable/ic_favorite_rosa.xml" value="0.193" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.19375" />
         <entry key="app/src/main/res/layout/fragment_article_news.xml" value="0.19375" />
-        <entry key="app/src/main/res/layout/fragment_breaking_news.xml" value="0.178125" />
+        <entry key="app/src/main/res/layout/fragment_breaking_news.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_favorite_news.xml" value="0.19375" />
         <entry key="app/src/main/res/layout/fragment_search_news.xml" value="0.19375" />
         <entry key="app/src/main/res/layout/news_item.xml" value="0.2" />

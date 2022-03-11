@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dboy.newsmvvm.adapters.NewsAdapterWithPagination
 import com.dboy.newsmvvm.adapters.NewsLoadStateAdapter
@@ -42,6 +43,18 @@ class BreakingNewsFragment : Fragment() {
                     article = it
                 )
             findNavController().navigate(action)
+        }
+
+        newsAdapter.addLoadStateListener {
+            binding?.apply {
+                pgBreakingNews.visibility = if(it.source.refresh is LoadState.Loading) View.VISIBLE else View.GONE
+                btnRetry.visibility = if(it.source.refresh is LoadState.Error) View.VISIBLE else View.GONE
+                tvError.visibility = if(it.source.refresh is LoadState.Error) View.VISIBLE else View.GONE
+            }
+        }
+
+        binding?.btnRetry?.setOnClickListener {
+            newsAdapter.retry()
         }
     }
 

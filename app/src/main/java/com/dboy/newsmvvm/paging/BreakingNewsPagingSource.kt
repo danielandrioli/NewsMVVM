@@ -21,7 +21,7 @@ class BreakingNewsPagingSource( //por enquanto, vou deixar sem injecao de depend
 
         return try {
             val response = newsApi.getBreakingNews(countryCode = countryCode.toString(), pageNumber = position,
-                pageSize = params.loadSize)  //o tamanho loadSize é definino através do PagingConfig
+                pageSize = params.loadSize)  //o tamanho loadSize é definido através do PagingConfig
             val newsResponse = response.body()
             if (response.isSuccessful && newsResponse != null){
                 LoadResult.Page(

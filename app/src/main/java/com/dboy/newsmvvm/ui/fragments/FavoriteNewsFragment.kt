@@ -38,6 +38,10 @@ class FavoriteNewsFragment : Fragment() {
 
         newsViewModel.getSavedNews().observe(viewLifecycleOwner){
             newsAdapter.differ.submitList(it.reversed())
+            binding?.apply {
+                ivNothingHere.visibility = if (it.isEmpty()) View.VISIBLE else View.GONE
+                tvNothingHere.visibility = if (it.isEmpty()) View.VISIBLE else View.GONE
+            }
         }
 
         //arrastar para o lado para deletar:

@@ -8,6 +8,8 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.paging.LoadState
+import androidx.paging.PagingData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dboy.newsmvvm.adapters.NewsAdapterWithPagination
 import com.dboy.newsmvvm.adapters.NewsLoadStateAdapter
@@ -45,9 +47,7 @@ class SearchNewsFragment : Fragment() {
             job = MainScope().launch {
                 delay(1000L)
                 it?.let {
-                    if (it.isNotEmpty()) {
-                        newsViewModel.searchNews(it.toString(), Language.en)
-                    }
+                    newsViewModel.searchNews(it.toString(), Language.en)  //o usuario deve poder mudar a linguagem
                 }
             }
         }
@@ -63,6 +63,22 @@ class SearchNewsFragment : Fragment() {
                 SearchNewsFragmentDirections.actionSearchNewsFragmentToArticleNewsFragment(it)
             findNavController().navigate(action)
         }
+
+        newsAdapter.addLoadStateListener {
+            binding?.apply {
+                pgSearchNews.visibility = if(it.source.refresh is LoadState.Loading) View.VISIBLE else View.GONE
+                rvSearchNews.visibility = if(it.source.refresh is LoadState.Loading) View.INVISIBLE else View.VISIBLE
+                btnRetry.visibility = if(it.source.refresh is LoadState.Error) View.VISIBLE else View.GONE
+                tvError.visibility = if(it.source.refresh is LoadState.Error) View.VISIBLE else View.GONE
+
+                ivEmptySearch.visibility = if (it.source.refresh is LoadState.NotLoading && newsAdapter.itemCount < 1) View.VISIBLE else View.GONE
+                tvEmptySearch.visibility = if (it.source.refresh is LoadState.NotLoading && newsAdapter.itemCount < 1) View.VISIBLE else View.GONE
+            }
+        }
+
+        binding?.btnRetry?.setOnClickListener {
+            newsAdapter.retry()
+        }
     }
 
     private fun setupRecyclerView() {
@@ -73,6 +89,7 @@ class SearchNewsFragment : Fragment() {
                 footer = NewsLoadStateAdapter(newsAdapter::retry)
             )
             layoutManager = LinearLayoutManager(requireContext())
+            itemAnimator = null  //the old data flashes quickly on the screen after new research. Setting this property to null gets rid of this behavior.
         }
     }
 
