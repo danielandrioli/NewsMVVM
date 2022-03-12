@@ -1,6 +1,7 @@
 package com.dboy.newsmvvm.ui.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -47,7 +48,7 @@ class SearchNewsFragment : Fragment() {
             job = MainScope().launch {
                 delay(1000L)
                 it?.let {
-                    newsViewModel.searchNews(it.toString(), Language.en)  //o usuario deve poder mudar a linguagem
+                    newsViewModel.searchNews(it.toString())
                 }
             }
         }
@@ -67,10 +68,11 @@ class SearchNewsFragment : Fragment() {
         newsAdapter.addLoadStateListener {
             binding?.apply {
                 pgSearchNews.visibility = if(it.source.refresh is LoadState.Loading) View.VISIBLE else View.GONE
-                rvSearchNews.visibility = if(it.source.refresh is LoadState.Loading) View.INVISIBLE else View.VISIBLE
+                rvSearchNews.visibility = if(it.source.refresh !is LoadState.NotLoading) View.INVISIBLE else View.VISIBLE
                 btnRetry.visibility = if(it.source.refresh is LoadState.Error) View.VISIBLE else View.GONE
                 tvError.visibility = if(it.source.refresh is LoadState.Error) View.VISIBLE else View.GONE
 
+                Log.i("SearchNewsFragment", "CombinedLoadStates.source.refresh: ${it.source.refresh}")
                 ivEmptySearch.visibility = if (it.source.refresh is LoadState.NotLoading && newsAdapter.itemCount < 1) View.VISIBLE else View.GONE
                 tvEmptySearch.visibility = if (it.source.refresh is LoadState.NotLoading && newsAdapter.itemCount < 1) View.VISIBLE else View.GONE
             }

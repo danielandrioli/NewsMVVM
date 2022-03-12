@@ -1,18 +1,18 @@
 package com.dboy.newsmvvm.ui.fragments
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.dboy.newsmvvm.R
 import com.dboy.newsmvvm.adapters.NewsAdapterWithPagination
 import com.dboy.newsmvvm.adapters.NewsLoadStateAdapter
 import com.dboy.newsmvvm.databinding.FragmentBreakingNewsBinding
 import com.dboy.newsmvvm.ui.NewsViewModel
+import com.dboy.newsmvvm.util.CountryCode
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -47,6 +47,7 @@ class BreakingNewsFragment : Fragment() {
 
         newsAdapter.addLoadStateListener {
             binding?.apply {
+                rvBreakingNews.visibility = if(it.source.refresh !is LoadState.NotLoading) View.INVISIBLE else View.VISIBLE
                 pgBreakingNews.visibility = if(it.source.refresh is LoadState.Loading) View.VISIBLE else View.GONE
                 btnRetry.visibility = if(it.source.refresh is LoadState.Error) View.VISIBLE else View.GONE
                 tvError.visibility = if(it.source.refresh is LoadState.Error) View.VISIBLE else View.GONE
@@ -66,6 +67,7 @@ class BreakingNewsFragment : Fragment() {
                 footer = NewsLoadStateAdapter(newsAdapter::retry)
             )
             layoutManager = LinearLayoutManager(requireContext())
+            itemAnimator = null
             setHasFixedSize(true)
         }
     }

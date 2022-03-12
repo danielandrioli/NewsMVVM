@@ -13,6 +13,8 @@
         <entry key="app/src/main/res/layout/news_item.xml" value="0.2" />
         <entry key="app/src/main/res/layout/news_load_state_footer.xml" value="0.25" />
         <entry key="app/src/main/res/menu/bottom_navigation_menu.xml" value="0.19375" />
+        <entry key="app/src/main/res/menu/top_dropdown_menu.xml" value="0.22" />
+        <entry key="app/src/main/res/menu/top_dropdown_menu_comflag.xml" value="0.17222222222222222" />
       </map>
     </option>
   </component>

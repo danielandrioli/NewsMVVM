@@ -34,7 +34,7 @@ class DefaultNewsRepository(
 
     override fun searchNewsFromApiWithPagination(
         searchQuery: String,
-        language: Language
+        country: CountryCode
     ): LiveData<PagingData<Article>> {
         return Pager(
             config = PagingConfig(
@@ -43,7 +43,7 @@ class DefaultNewsRepository(
                 enablePlaceholders = false
             ),
             pagingSourceFactory = {
-                SearchNewsPagingSource(newsApi, language, searchQuery)
+                SearchNewsPagingSource(newsApi, country.language, searchQuery)
             }
         ).liveData
     }

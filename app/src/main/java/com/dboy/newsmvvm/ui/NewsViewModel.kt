@@ -1,5 +1,10 @@
 package com.dboy.newsmvvm.ui
 
+import android.util.Log
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.*
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
@@ -7,58 +12,82 @@ import com.dboy.newsmvvm.util.CountryCode
 import com.dboy.newsmvvm.api.response.Article
 import com.dboy.newsmvvm.util.Language
 import com.dboy.newsmvvm.repositories.NewsRepository
+import com.dboy.newsmvvm.util.COUNTRY_KEY
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class NewsViewModel @Inject constructor(private val newsRepository: NewsRepository) : ViewModel() {
+class NewsViewModel @Inject constructor(
+    private val newsRepository: NewsRepository,
+    private val dataStore: DataStore<Preferences>
+) : ViewModel() {
 
     private val countryCode = MutableLiveData<CountryCode>()
-    private var language = DEFAULT_LANGUAGE
     val breakingNewsWithPagination = countryCode.switchMap {
-        changeLanguage(it)
         newsRepository.getBreakingNewsWithPagination(it).cachedIn(viewModelScope)
     }
+
     // ^ this lambda will be executed whenever countryCode value changes
     //it's necessary to cacheIn the data, otherwise it will crash when rotating the device
     private val searchQuery = MutableLiveData<String>()
     val searchedNewsWithPagination: LiveData<PagingData<Article>> = searchQuery.switchMap {
-        if (it.isEmpty()){
+        if (it.isEmpty()) {
             val emptyLiveData = MutableLiveData<PagingData<Article>>()
             emptyLiveData.value = PagingData.empty()
             emptyLiveData
         } else {
-            newsRepository.searchNewsFromApiWithPagination(it, language).cachedIn(viewModelScope)
+
+            newsRepository.searchNewsFromApiWithPagination(it, countryCode.value ?: DEFAULT_COUNTRY_CODE).cachedIn(viewModelScope)
         }
     }
 
     init {
-        countryCode.value = DEFAULT_COUNTRY_CODE //PEGAR DO SHARED PREFERENCES
+        viewModelScope.launch {
+            val currentCountry = getCurrentCountryOnPreferences(COUNTRY_KEY)
+            countryCode.value = if (currentCountry != null) getCountry(currentCountry) else DEFAULT_COUNTRY_CODE
+        }
     }
 
     companion object {
-        private val DEFAULT_COUNTRY_CODE = CountryCode.us //pegar do shared preferences!
-        private val DEFAULT_LANGUAGE = Language.en
+        private val DEFAULT_COUNTRY_CODE = CountryCode.us
     }
 
-    private fun changeLanguage(countryCode: CountryCode) {
-        when (countryCode) {
-            CountryCode.br -> Language.pt
-            CountryCode.ar -> Language.es
-            CountryCode.fr -> Language.fr
-            CountryCode.mx -> Language.es
-            CountryCode.us -> Language.en
+    fun searchNews(searchQuery: String) {
+        this.searchQuery.value = searchQuery
+    }
+
+    private fun getCountry(code: String): CountryCode {
+        return when (code) {
+            "ar" -> CountryCode.ar
+            "br" -> CountryCode.br
+            "fr" -> CountryCode.fr
+            "mx" -> CountryCode.mx
+            "us" -> CountryCode.us
+            else -> CountryCode.us
         }
     }
 
     fun changeCountry(countryCode: CountryCode) {
         this.countryCode.value = countryCode
+        viewModelScope.launch {
+            saveCountryOnPreferences(COUNTRY_KEY, countryCode.toString())
+        }
     }
 
-    fun searchNews(searchQuery: String, language: Language) {
-        this.language = language
-        this.searchQuery.value = searchQuery
+
+    private suspend fun saveCountryOnPreferences(key: String, value: String) {
+        val dataStoreKey = stringPreferencesKey(key)
+        dataStore.edit {
+            it[dataStoreKey] = value
+        }
+    }
+
+    private suspend fun getCurrentCountryOnPreferences(key: String): String? {
+        val dataStoreKey = stringPreferencesKey(key)
+        val preferences = dataStore.data.first()
+        return preferences[dataStoreKey]
     }
 
     fun saveNews(article: Article) = viewModelScope.launch {

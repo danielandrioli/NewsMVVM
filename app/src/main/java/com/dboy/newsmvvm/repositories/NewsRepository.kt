@@ -11,7 +11,7 @@ interface NewsRepository {
 
     fun searchNewsFromApiWithPagination(
         searchQuery: String,
-        language: Language
+        country: CountryCode
     ): LiveData<PagingData<Article>>
 
     suspend fun upsertArticle(article: Article): Long

@@ -1,6 +1,12 @@
 package com.dboy.newsmvvm.di
 
 import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.emptyPreferences
+import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.room.Room
 import com.dboy.newsmvvm.api.NewsApi
 import com.dboy.newsmvvm.database.ArticleDao
@@ -8,6 +14,7 @@ import com.dboy.newsmvvm.database.NewsDatabase
 import com.dboy.newsmvvm.repositories.DefaultNewsRepository
 import com.dboy.newsmvvm.repositories.NewsRepository
 import com.dboy.newsmvvm.util.BASE_URL
+import com.dboy.newsmvvm.util.DATASTORE_NAME
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
@@ -62,4 +69,15 @@ object AppModule {
     //Se eu tivesse apenas criado uma classe para o repositório (e não uma interface que ajudará no polimorfismo e teste)
     //então não haveria necessidade de criar essa função provides no módulo. Então eu injetaria a dependência diretamente
     // na classe do repositório utilizando o @Inject, e o Hilt aprenderia a como criar esse repositório.
+
+    @Singleton
+    @Provides
+    fun providesPreferenceDataStore(@ApplicationContext appContext: Context): DataStore<Preferences> {
+        return PreferenceDataStoreFactory.create(
+            corruptionHandler = ReplaceFileCorruptionHandler(
+                produceNewData = { emptyPreferences()}
+            ),
+            produceFile = {appContext.preferencesDataStoreFile(DATASTORE_NAME)}
+        )
+    }
 }

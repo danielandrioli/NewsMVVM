@@ -43,7 +43,7 @@ class ArticleNewsFragment : Fragment() {
         val savedArticlesList = newsViewModel.getSavedNews()
 
         binding?.fabFavorite?.setOnClickListener {
-            val savedArticleFromDb = savedArticlesList!!.value?.find {
+            val savedArticleFromDb = savedArticlesList.value?.find {
                 it.url == article.url
             }
             if (savedArticleFromDb != null) { // != null means it is in the database
