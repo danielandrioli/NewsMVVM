@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.dboy.newsmvvm.R
 import com.dboy.newsmvvm.adapters.NewsAdapterWithPagination
 import com.dboy.newsmvvm.adapters.NewsLoadStateAdapter
 import com.dboy.newsmvvm.databinding.FragmentSearchNewsBinding
@@ -71,10 +72,12 @@ class SearchNewsFragment : Fragment() {
                 rvSearchNews.visibility = if(it.source.refresh !is LoadState.NotLoading) View.INVISIBLE else View.VISIBLE
                 btnRetry.visibility = if(it.source.refresh is LoadState.Error) View.VISIBLE else View.GONE
                 tvError.visibility = if(it.source.refresh is LoadState.Error) View.VISIBLE else View.GONE
-
                 Log.i("SearchNewsFragment", "CombinedLoadStates.source.refresh: ${it.source.refresh}")
-                ivEmptySearch.visibility = if (it.source.refresh is LoadState.NotLoading && newsAdapter.itemCount < 1) View.VISIBLE else View.GONE
+                ivEmptySearch.visibility =  if (it.source.refresh is LoadState.NotLoading && newsAdapter.itemCount < 1) View.VISIBLE else View.GONE
                 tvEmptySearch.visibility = if (it.source.refresh is LoadState.NotLoading && newsAdapter.itemCount < 1) View.VISIBLE else View.GONE
+
+                ivEmptySearch.setImageResource(if (tieSearch.editableText.isEmpty()) R.drawable.search_background else R.drawable.noresultsfound)
+                tvEmptySearch.text = if (tieSearch.editableText.isEmpty()) getString(R.string.searchSomething) else getString(R.string.noResultsFound)
             }
         }
 

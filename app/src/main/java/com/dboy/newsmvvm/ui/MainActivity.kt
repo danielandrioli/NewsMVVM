@@ -32,7 +32,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
     private var binding : ActivityMainBinding? = null
     private val newsViewModel: NewsViewModel by viewModels()
-//    private val dataStore: DataStore<Preferences> by preferencesDataStore("settings")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,7 +64,7 @@ class MainActivity : AppCompatActivity() {
             R.id.it_France -> CountryCode.fr
             R.id.it_Mexico -> CountryCode.mx
             R.id.it_USA -> CountryCode.us
-            else -> CountryCode.us
+            else -> return false  //return false here, otherwise up backbutton won't work.
         }
         newsViewModel.changeCountry(selectedCountry)
         return true
