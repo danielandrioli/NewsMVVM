@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.dboy.newsmvvm.R
 import com.dboy.newsmvvm.adapters.NewsAdapter
 import com.dboy.newsmvvm.databinding.FragmentFavoriteNewsBinding
 import com.dboy.newsmvvm.ui.NewsViewModel
@@ -44,7 +45,7 @@ class FavoriteNewsFragment : Fragment() {
             }
         }
 
-        //arrastar para o lado para deletar:
+        //swipe to the side to delete:
         val itemTouchHelperCallBack = object : ItemTouchHelper.SimpleCallback(
             ItemTouchHelper.ACTION_STATE_IDLE, ItemTouchHelper.RIGHT or ItemTouchHelper.LEFT
         ){
@@ -61,8 +62,8 @@ class FavoriteNewsFragment : Fragment() {
                 val article = newsAdapter.differ.currentList[position]
                 newsViewModel.deleteNews(article)
 
-                Snackbar.make(view, "Article successfully removed from favorites!", Snackbar.LENGTH_LONG).apply {
-                    setAction("Undo"){
+                Snackbar.make(view, R.string.articleRemovedSnack, Snackbar.LENGTH_LONG).apply {
+                    setAction(R.string.undo){
                         newsViewModel.saveNews(article)
                     }
                     show()

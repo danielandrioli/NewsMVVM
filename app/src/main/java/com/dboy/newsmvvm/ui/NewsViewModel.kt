@@ -1,6 +1,5 @@
 package com.dboy.newsmvvm.ui
 
-import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -10,7 +9,6 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.dboy.newsmvvm.util.CountryCode
 import com.dboy.newsmvvm.api.response.Article
-import com.dboy.newsmvvm.util.Language
 import com.dboy.newsmvvm.repositories.NewsRepository
 import com.dboy.newsmvvm.util.COUNTRY_KEY
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,8 +22,9 @@ class NewsViewModel @Inject constructor(
     private val dataStore: DataStore<Preferences>
 ) : ViewModel() {
 
-    private val countryCode = MutableLiveData<CountryCode>()
-    val breakingNewsWithPagination = countryCode.switchMap {
+    private val _countryCode = MutableLiveData<CountryCode>()
+    val countryCode: LiveData<CountryCode> = _countryCode
+    val breakingNewsWithPagination = _countryCode.switchMap {
         newsRepository.getBreakingNewsWithPagination(it).cachedIn(viewModelScope)
     }
 
@@ -39,14 +38,14 @@ class NewsViewModel @Inject constructor(
             emptyLiveData
         } else {
 
-            newsRepository.searchNewsFromApiWithPagination(it, countryCode.value ?: DEFAULT_COUNTRY_CODE).cachedIn(viewModelScope)
+            newsRepository.searchNewsFromApiWithPagination(it, _countryCode.value ?: DEFAULT_COUNTRY_CODE).cachedIn(viewModelScope)
         }
     }
 
     init {
         viewModelScope.launch {
             val currentCountry = getCurrentCountryOnPreferences(COUNTRY_KEY)
-            countryCode.value = if (currentCountry != null) getCountry(currentCountry) else DEFAULT_COUNTRY_CODE
+            _countryCode.value = if (currentCountry != null) getCountry(currentCountry) else DEFAULT_COUNTRY_CODE
         }
     }
 
@@ -70,7 +69,7 @@ class NewsViewModel @Inject constructor(
     }
 
     fun changeCountry(countryCode: CountryCode) {
-        this.countryCode.value = countryCode
+        this._countryCode.value = countryCode
         viewModelScope.launch {
             saveCountryOnPreferences(COUNTRY_KEY, countryCode.toString())
         }

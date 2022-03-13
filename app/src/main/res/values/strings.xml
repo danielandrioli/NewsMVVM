@@ -4,4 +4,11 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="searchSomething">Search something...</string>
     <string name="noResultsFound">No results found.</string>
+    <string name="retry">Retry</string>
+    <string name="resultsCouldNotBeLoaded">Results could not be loaded.</string>
+    <string name="articleRemoved">Article removed from favorites.</string>
+    <string name="articleSaved">Article saved!</string>
+    <string name="articleRemovedSnack">Article successfully removed from favorites!</string>
+    <string name="undo">Undo</string>
+    <string name="searchFor">Search for...</string>
 </resources>

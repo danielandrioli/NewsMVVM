@@ -47,10 +47,10 @@ class ArticleNewsFragment : Fragment() {
                 it.url == article.url
             }
             if (savedArticleFromDb != null) { // != null means it is in the database
-                Toast.makeText(requireContext(), "Article removed from favorites.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), R.string.articleRemoved, Toast.LENGTH_SHORT).show()
                 newsViewModel.deleteNews(savedArticleFromDb) //savedArtFromDb came from db and it contains an id. With an id it's possible to delete the article from db.
             } else {
-                Toast.makeText(requireContext(), "Article saved!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), R.string.articleSaved, Toast.LENGTH_SHORT).show()
                 newsViewModel.saveNews(article) //Here, the article is not in the db, so I'm saving the article that came from args.
             }
         }

@@ -11,10 +11,10 @@ import retrofit2.HttpException
 import java.util.concurrent.CancellationException
 
 
-class BreakingNewsPagingSource( //por enquanto, vou deixar sem injecao de dependencia. Mas posteriormente vou mexer nisso
+class BreakingNewsPagingSource(
     private val newsApi: NewsApi,
-    private val countryCode: CountryCode  //se eu colocar um parâmetro padrão, talvez consiga fazer com que o Hilt injete aqui.
-): PagingSource<Int, Article>() {           //ou posso fazer o countryCode vir da SharedPreferences, q pode ser mudado depois pelo usuário.
+    private val countryCode: CountryCode
+): PagingSource<Int, Article>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Article> {
         val position = params.key ?: NEWS_STARTING_PAGE_INDEX
