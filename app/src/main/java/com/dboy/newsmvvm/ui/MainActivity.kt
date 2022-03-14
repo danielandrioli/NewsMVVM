@@ -18,7 +18,8 @@ import com.dboy.newsmvvm.util.CountryCode
 import dagger.hilt.android.AndroidEntryPoint
 
 /*
-* APP BASEADO NA PLAYLIST DO PHILIP LACKNER. ACRESCENTAREI MODIFICAÇÕES: COIL NO LUGAR DO GLIDE, E O USO DO DAGGER-HILT
+APP BASED ON PHILIP LACKNER'S NEWS PLAYLIST. THERE ARE A LOT OF MODIFICATIONS, THOUGH. I'M USING COIL INSTEAD OF GLIDE, DAGGER-HILT,
+PAGING3, AND I'VE ADDED SOME FEATURES LIKE CHOICE OF COUNTRY, SWIPE REFRESH, AND MORE.
 * */
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -35,7 +36,7 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.findNavController()
         val appBarConfiguration = AppBarConfiguration(setOf(R.id.breakingNewsFragment, R.id.favoriteNewsFragment, R.id.searchNewsFragment))
-        //com esse appBarConfiguration não haverá botão de voltar. O botão não é necessário, visto que todos fragments são top level.
+        //com esse appBarConfiguration não haverá botão de voltar nos 3 fragments. O botão não é necessário, visto que todos fragments são top level.
         setupActionBarWithNavController(navController, appBarConfiguration)
 
         binding?.bottomNavigationView?.setupWithNavController(navController)

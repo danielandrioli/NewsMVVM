@@ -7,7 +7,7 @@ class Converters {
 
     @TypeConverter  //função para salvar um source no db
     fun sourceToString(source: Source): String {
-        return source.name //o id não é importante, nesse projeto.
+        return source.name
     }
 
     @TypeConverter
