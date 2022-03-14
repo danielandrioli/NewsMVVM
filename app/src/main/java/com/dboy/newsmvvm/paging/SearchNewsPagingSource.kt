@@ -1,5 +1,6 @@
 package com.dboy.newsmvvm.paging
 
+import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.dboy.newsmvvm.api.NewsApi
@@ -31,7 +32,8 @@ class SearchNewsPagingSource(
                     nextKey = if (searchNewsResponse.articles.isEmpty()) null else position + 1
                 )
             } else {
-                LoadResult.Invalid()
+                Log.i("SearchNewsPaging", "Erro: $response")
+                throw Exception(response.code().toString())
             }
         } catch (exception: IOException) {
             LoadResult.Error(exception)

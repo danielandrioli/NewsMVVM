@@ -7,10 +7,10 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.*
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.dboy.newsmvvm.util.CountryCode
 import com.dboy.newsmvvm.api.response.Article
 import com.dboy.newsmvvm.repositories.NewsRepository
 import com.dboy.newsmvvm.util.COUNTRY_KEY
+import com.dboy.newsmvvm.util.CountryCode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -37,7 +37,6 @@ class NewsViewModel @Inject constructor(
             emptyLiveData.value = PagingData.empty()
             emptyLiveData
         } else {
-
             newsRepository.searchNewsFromApiWithPagination(it, _countryCode.value ?: DEFAULT_COUNTRY_CODE).cachedIn(viewModelScope)
         }
     }

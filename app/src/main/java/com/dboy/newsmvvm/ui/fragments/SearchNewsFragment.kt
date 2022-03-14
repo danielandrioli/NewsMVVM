@@ -66,16 +66,21 @@ class SearchNewsFragment : Fragment() {
 
         newsAdapter.addLoadStateListener {
             binding?.apply {
-                pgSearchNews.visibility = if(it.source.refresh is LoadState.Loading) View.VISIBLE else View.GONE
-                rvSearchNews.visibility = if(it.source.refresh !is LoadState.NotLoading) View.INVISIBLE else View.VISIBLE
-                btnRetry.visibility = if(it.source.refresh is LoadState.Error) View.VISIBLE else View.GONE
-                tvError.visibility = if(it.source.refresh is LoadState.Error) View.VISIBLE else View.GONE
-                Log.i("SearchNewsFragment", "CombinedLoadStates.source.refresh: ${it.source.refresh}")
-                ivEmptySearch.visibility =  if (it.source.refresh is LoadState.NotLoading && newsAdapter.itemCount < 1) View.VISIBLE else View.GONE
-                tvEmptySearch.visibility = if (it.source.refresh is LoadState.NotLoading && newsAdapter.itemCount < 1) View.VISIBLE else View.GONE
+                val sourceRefresh = it.source.refresh
+                pgSearchNews.visibility = if(sourceRefresh is LoadState.Loading) View.VISIBLE else View.GONE
+                rvSearchNews.visibility = if(sourceRefresh !is LoadState.NotLoading) View.INVISIBLE else View.VISIBLE
+                btnRetry.visibility = if(sourceRefresh is LoadState.Error) View.VISIBLE else View.GONE
+                tvError.visibility = if(sourceRefresh is LoadState.Error) View.VISIBLE else View.GONE
+                Log.i("SearchNewsFragment", "CombinedLoadStates.source.refresh: ${sourceRefresh}")
+                ivEmptySearch.visibility =  if (sourceRefresh is LoadState.NotLoading && newsAdapter.itemCount < 1) View.VISIBLE else View.GONE
+                tvEmptySearch.visibility = if (sourceRefresh is LoadState.NotLoading && newsAdapter.itemCount < 1) View.VISIBLE else View.GONE
 
                 ivEmptySearch.setImageResource(if (tieSearch.editableText.isEmpty()) R.drawable.search_background else R.drawable.noresultsfound)
                 tvEmptySearch.text = if (tieSearch.editableText.isEmpty()) getString(R.string.searchSomething) else getString(R.string.noResultsFound)
+
+                tvError.text = if (sourceRefresh is LoadState.Error && sourceRefresh.error.message.equals("HTTP 429 "))
+                    getString(R.string.tooManyRequests)
+                else getString(R.string.resultsCouldNotBeLoaded)
             }
         }
 

@@ -78,17 +78,17 @@ dependencies {
     kapt "androidx.hilt:hilt-compiler:1.0.0"
 
     //Room
-    implementation "androidx.room:room-runtime:2.4.1"
-    kapt "androidx.room:room-compiler:2.4.1"
+    implementation "androidx.room:room-runtime:2.4.2"
+    kapt "androidx.room:room-compiler:2.4.2"
 
     // Kotlin Extensions and Coroutines support for Room
-    implementation "androidx.room:room-ktx:2.4.1"
+    implementation "androidx.room:room-ktx:2.4.2"
 
     //Coil
     implementation("io.coil-kt:coil:1.4.0")
     implementation("io.coil-kt:coil-gif:1.4.0")
 
-    def paging_version = "3.1.0"
+    def paging_version = "3.1.1"
     implementation "androidx.paging:paging-runtime:$paging_version"
 
     //DataStore

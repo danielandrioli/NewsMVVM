@@ -11,4 +11,5 @@
     <string name="articleRemovedSnack">Article successfully removed from favorites!</string>
     <string name="undo">Undo</string>
     <string name="searchFor">Search for...</string>
+    <string name="tooManyRequests">Sorry! Too many requests today. Try it later!</string>
 </resources>

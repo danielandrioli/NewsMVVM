@@ -1,7 +1,10 @@
 package com.dboy.newsmvvm.ui.fragments
 
 import android.os.Bundle
-import android.view.*
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -12,8 +15,8 @@ import com.dboy.newsmvvm.adapters.NewsAdapterWithPagination
 import com.dboy.newsmvvm.adapters.NewsLoadStateAdapter
 import com.dboy.newsmvvm.databinding.FragmentBreakingNewsBinding
 import com.dboy.newsmvvm.ui.NewsViewModel
-import com.dboy.newsmvvm.util.CountryCode
 import dagger.hilt.android.AndroidEntryPoint
+import retrofit2.HttpException
 
 @AndroidEntryPoint
 class BreakingNewsFragment : Fragment() {
@@ -47,15 +50,28 @@ class BreakingNewsFragment : Fragment() {
 
         newsAdapter.addLoadStateListener {
             binding?.apply {
-                rvBreakingNews.visibility = if(it.source.refresh !is LoadState.NotLoading) View.INVISIBLE else View.VISIBLE
-                pgBreakingNews.visibility = if(it.source.refresh is LoadState.Loading) View.VISIBLE else View.GONE
-                btnRetry.visibility = if(it.source.refresh is LoadState.Error) View.VISIBLE else View.GONE
-                tvError.visibility = if(it.source.refresh is LoadState.Error) View.VISIBLE else View.GONE
+                val sourceRefresh = it.source.refresh
+                rvBreakingNews.visibility = if(sourceRefresh !is LoadState.NotLoading) View.INVISIBLE else View.VISIBLE
+                pgBreakingNews.visibility = if(sourceRefresh is LoadState.Loading && !swipeRefresh.isRefreshing) View.VISIBLE else View.GONE
+                btnRetry.visibility = if(sourceRefresh is LoadState.Error) View.VISIBLE else View.GONE
+                tvError.visibility = if(sourceRefresh is LoadState.Error) View.VISIBLE else View.GONE
+                tvError.text = if (sourceRefresh is LoadState.Error && sourceRefresh.error.message.equals("HTTP 429 "))
+                    getString(R.string.tooManyRequests)
+                else getString(R.string.resultsCouldNotBeLoaded)
+                if (sourceRefresh !is LoadState.Loading) swipeRefresh.isRefreshing = false
+                if (sourceRefresh is LoadState.Error) Log.i("BreakingNewsFrag", "${sourceRefresh.error.message}")
             }
         }
 
         binding?.btnRetry?.setOnClickListener {
             newsAdapter.retry()
+        }
+
+        binding?.apply {
+            swipeRefresh.setOnRefreshListener {
+                newsAdapter.refresh()
+                Log.i("BreakingNews", "isRefreshing: ${swipeRefresh.isRefreshing}" )
+            }
         }
     }
 
